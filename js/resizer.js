@@ -93,9 +93,11 @@
       this._ctx.strokeStyle = '#ffe753';
       // Размер штрихов. Первый элемент массива задает длину штриха, второй
       // расстояние между соседними штрихами.
-      this._ctx.setLineDash([15, 10]);
+      this._ctx.setLineDash([15, 10])
       // Смещение первого штриха от начала линии.
       this._ctx.lineDashOffset = 7;
+      // Цвет заливки.
+      this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
 
       // Сохранение состояния канваса.
       // Подробней см. строку 132.
@@ -110,6 +112,15 @@
       // нужно отрисовать и координаты его верхнего левого угла.
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
+
+      // Отрисовка черного заднего фона вокруг фотографии
+      this._ctx.beginPath();
+      this._ctx.rect(displX, displY, this._container.width, this._container.height);
+      this._ctx.rect((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+      this._resizeConstraint.side - this._ctx.lineWidth / 2,
+      this._resizeConstraint.side - this._ctx.lineWidth / 2);
+      this._ctx.fill("evenodd");
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
