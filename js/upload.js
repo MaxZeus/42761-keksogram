@@ -172,6 +172,26 @@
   };
 
   /**
+   * Валидация формы кадрирования.
+   */
+
+  var resizeBtn = resizeForm['resize-fwd'];
+  resizeBtn.setAttribute('disabled', '');
+
+  resizeForm.onchange = function(evt) {
+    evt.preventDefault();
+
+    var resizeX = resizeForm['resize-x'];
+    var resizeY = resizeForm['resize-y'];
+    var resizeSize = resizeForm['resize-size'];
+    if ( parseInt(resizeX.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth && parseInt(resizeY.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth ) {
+      resizeBtn.removeAttribute('disabled');
+    } else {
+      resizeBtn.setAttribute('disabled', '');
+    }
+  };
+
+  /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
    * @param {Event} evt
