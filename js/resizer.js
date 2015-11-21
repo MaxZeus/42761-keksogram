@@ -97,7 +97,7 @@
       // Смещение первого штриха от начала линии.
       this._ctx.lineDashOffset = 7;
       // Цвет заливки.
-      this._ctx.fillStyle = 'rgba(0,0,0,0.8)';
+      this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
 
       // Сохранение состояния канваса.
       // Подробней см. строку 132.
@@ -138,7 +138,7 @@
       var textW = textCtx.width;
 
       // Цвет заливки.
-      this._ctx.fillStyle = 'rgb(255,255,255)';
+      this._ctx.fillStyle = 'rgb(255, 255, 255)';
       this._ctx.font = '14px normal Arial sans-serif';
       this._ctx.fillText(text, (this._ctx.lineWidth / 2 - textW / 2 ), ((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2 - 10));
 
