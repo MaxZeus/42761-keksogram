@@ -96,6 +96,8 @@
       this._ctx.setLineDash([15, 10]);
       // Смещение первого штриха от начала линии.
       this._ctx.lineDashOffset = 7;
+      // Цвет заливки.
+      this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
 
       // Сохранение состояния канваса.
       // Подробней см. строку 132.
@@ -111,6 +113,15 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
+      // Отрисовка черного заднего фона вокруг фотографии
+      this._ctx.beginPath();
+      this._ctx.rect(displX, displY, this._container.width, this._container.height);
+      this._ctx.rect((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
+          this._resizeConstraint.side - this._ctx.lineWidth / 2,
+          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+      this._ctx.fill('evenodd');
+
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
       this._ctx.strokeRect(
@@ -118,6 +129,18 @@
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2,
           this._resizeConstraint.side - this._ctx.lineWidth / 2);
+
+      // работа с текстом размера картинки
+      var imageW = this._image.naturalWidth;
+      var imageH = this._image.naturalHeight;
+      var text = imageW + ' x ' + imageH;
+      var textCtx = this._ctx.measureText(text);
+      var textW = textCtx.width;
+
+      // Цвет заливки.
+      this._ctx.fillStyle = 'rgb(255, 255, 255)';
+      this._ctx.font = '14px normal Arial sans-serif';
+      this._ctx.fillText(text, (this._ctx.lineWidth / 2 - textW / 2 ), ((-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2 - 10));
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
