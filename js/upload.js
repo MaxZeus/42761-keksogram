@@ -236,12 +236,12 @@
   // Перевёл переменную выбранного фильтра в глобальную область
   // Если есть значение из куки то ставим его, если нет то оставляем значение по умолчанию.
   var selectedFilter = '';
-  if (docCookies.getItem('filter')){
+  if (docCookies.getItem('filter')) {
     selectedFilter = docCookies.getItem('filter');
 
     var radioButtons = filterForm.querySelectorAll('input[type=radio]');
-    for ( var i = 0; i < radioButtons.length; i++){
-      if ( radioButtons[i].value == selectedFilter){
+    for ( var i = 0; i < radioButtons.length; i++) {
+      if ( radioButtons[i].value === selectedFilter) {
         radioButtons[i].setAttribute('checked', '');
         filterImage.className = 'filter-image-preview filter-' + selectedFilter;
       } else {
@@ -249,7 +249,7 @@
       }
     }
   } else {
-    var selectedFilter = 'filter-none';
+    selectedFilter = 'filter-none';
   }
 
   /**
