@@ -86,10 +86,26 @@ function getPhotos() {
           break;
 
         // список отсортированный по датам по убыванию
+        // плюс только последний месяц
         case 'new' :
           var newList = loadedPictures.slice(0);
           newList.sort(compareDate);
-          drawPictures(newList);
+          var a = null;
+          var month = null;
+          var lastMonth = null;
+          // фильтруем массив
+          var filterNewList = newList.filter(function(date, i) {
+            a = new Date(date.date);
+            month = a.getMonth();
+            if (i === 0) {
+              lastMonth = a.getMonth();
+              return true;
+            }
+            if (month === lastMonth) {
+              return true;
+            }
+          });
+          drawPictures(filterNewList);
           break;
 
         // списко отсортированный по комментариям по убыванию
