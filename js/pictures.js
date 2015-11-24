@@ -1,24 +1,12 @@
 /* Модуль инициализации списка фотографий */
 'use strict';
 
-// Убираем фильтр
+// Объявляем фильтр
 var filters = document.querySelector('.filters');
-
-// Берем и прячем его, если он до этого ещё не спрятан
-if (!filters.classList.contains('hidden')) {
-  filters.classList.add('hidden');
-}
+var loadedPictures;
 
 // основной контейнер
 var picturesContainer = document.querySelector('.pictures');
-
-// 1 способ перебора основного массива из pictures.js
-// eslint активно ругается, но массив в другом файле
-// eslint иди и ищи его там
-// pictures.forEach(function(el) {
-//   var element = getPhotoTemplate(el);
-//   picturesContainer.appendChild(element);
-// });
 
 // Вариант из способа с аяксом
 getPhotos();
@@ -51,6 +39,10 @@ function getPhotos() {
 
   // событие по началу загрузки
   xhr.onloadstart = function() {
+    // Берем и прячем фильтр, если он до этого ещё не спрятан
+    if (!filters.classList.contains('hidden')) {
+      filters.classList.add('hidden');
+    }
     picturesContainer.classList.add('pictures-loading');
   };
 
@@ -67,91 +59,90 @@ function getPhotos() {
   // событие по загрузке
   xhr.onload = function(evt) {
     picturesContainer.classList.remove('pictures-loading');
+    // показываем фильтр
+    filters.classList.remove('hidden');
     var rawData = evt.target.response;
-    var loadedPictures = JSON.parse(rawData);
+    loadedPictures = JSON.parse(rawData);
 
     drawPictures(loadedPictures);
-
-    // Обработчики для фильтров
-    filters.onchange = function(event) {
-      event.preventDefault();
-
-      // забираем текущее значение фильтра
-      var filter = filters.filter.value;
-
-      switch (filter) {
-        // выводим стандартный список
-        case 'popular':
-          drawPictures(loadedPictures);
-          break;
-
-        // список отсортированный по датам по убыванию
-        // плюс только последний месяц
-        case 'new' :
-          var newList = loadedPictures.slice(0);
-          newList.sort(compareDate);
-          var a = null;
-          var month = null;
-          var lastMonth = null;
-          // фильтруем массив
-          var filterNewList = newList.filter(function(date, i) {
-            a = new Date(date.date);
-            month = a.getMonth();
-            if (i === 0) {
-              lastMonth = a.getMonth();
-              return true;
-            }
-            if (month === lastMonth) {
-              return true;
-            }
-          });
-          drawPictures(filterNewList);
-          break;
-
-        // списко отсортированный по комментариям по убыванию
-        case 'discussed':
-          var newList2 = loadedPictures.slice(0);
-          newList2.sort(compareComment);
-          drawPictures(newList2);
-          break;
-      }
-
-      /**
-       * Сортировка по комментария
-       * @param {Array} element
-       * @param {Array} element
-       */
-      function compareComment(a, b) {
-        if (a.comments < b.comments) {
-          return 1;
-        }
-        if (a.comments > b.comments) {
-          return -1;
-        }
-      }
-
-      /**
-       * Сортировка по датам
-       * @param {Array} element
-       * @param {Array} element
-       */
-      function compareDate(a, b) {
-        if (a.date < b.date) {
-          return 1;
-        }
-        if (a.date > b.date) {
-          return -1;
-        }
-      }
-    };
   };
 
   xhr.send();
 }
 
-// показываем фильтры
-filters.classList.remove('hidden');
+// Обработчики для фильтров
+filters.onchange = function(event) {
+  event.preventDefault();
 
+  // забираем текущее значение фильтра
+  var filter = filters.filter.value;
+
+  switch (filter) {
+    // выводим стандартный список
+    case 'popular':
+      drawPictures(loadedPictures);
+      break;
+
+    // список отсортированный по датам по убыванию
+    // плюс только последний месяц
+    case 'new' :
+      var newList = loadedPictures.slice(0);
+      newList.sort(compareDate);
+      var a = null;
+      var month = null;
+      var lastMonth = null;
+      // фильтруем массив
+      var filterNewList = newList.filter(function(date, i) {
+        a = new Date(date.date);
+        month = a.getMonth();
+        if (i === 0) {
+          lastMonth = a.getMonth();
+          return true;
+        }
+        if (month === lastMonth) {
+          return true;
+        }
+      });
+      drawPictures(filterNewList);
+      break;
+
+    // списко отсортированный по комментариям по убыванию
+    case 'discussed':
+      var newList2 = loadedPictures.slice(0);
+      newList2.sort(compareComment);
+      drawPictures(newList2);
+      break;
+  }
+
+};
+
+/**
+ * Сортировка по комментария
+ * @param {Array} element
+ * @param {Array} element
+ */
+function compareComment(a, b) {
+  if (a.comments < b.comments) {
+    return 1;
+  }
+  if (a.comments > b.comments) {
+    return -1;
+  }
+}
+
+/**
+ * Сортировка по датам
+ * @param {Array} element
+ * @param {Array} element
+ */
+function compareDate(a, b) {
+  if (a.date < b.date) {
+    return 1;
+  }
+  if (a.date > b.date) {
+    return -1;
+  }
+}
 
 /**
  * @param {Object} data
