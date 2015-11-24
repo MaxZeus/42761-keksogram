@@ -120,28 +120,20 @@ filters.onchange = function(event) {
  * Сортировка по комментария
  * @param {Array} element
  * @param {Array} element
+ * @return {number}
  */
 function compareComment(a, b) {
-  if (a.comments < b.comments) {
-    return 1;
-  }
-  if (a.comments > b.comments) {
-    return -1;
-  }
+  return b.comments - a.comments;
 }
 
 /**
  * Сортировка по датам
  * @param {Array} element
  * @param {Array} element
+ * @return {number}
  */
 function compareDate(a, b) {
-  if (a.date < b.date) {
-    return 1;
-  }
-  if (a.date > b.date) {
-    return -1;
-  }
+  return b.date - a.date;
 }
 
 /**
