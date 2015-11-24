@@ -47,11 +47,87 @@ function drawPictures(pictures) {
 function getPhotos() {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', 'data/pictures.json');
+  xhr.timeout = 10000;
+
+  // событие по началу загрузки
+  xhr.onloadstart = function() {
+    picturesContainer.classList.add('pictures-loading');
+  };
+
+  // событие если ошибка
+  xhr.onerror = function() {
+    picturesContainer.classList.add('pictures-failure');
+  };
+
+  // событие по тайауту
+  xhr.ontimeout = function() {
+    picturesContainer.classList.add('pictures-failure');
+  };
+
+  // событие по загрузке
   xhr.onload = function(evt) {
+    picturesContainer.classList.remove('pictures-loading');
     var rawData = evt.target.response;
     var loadedPictures = JSON.parse(rawData);
 
     drawPictures(loadedPictures);
+
+    // Обработчики для фильтров
+    filters.onchange = function(event) {
+      event.preventDefault();
+
+      // забираем текущее значение фильтра
+      var filter = filters.filter.value;
+
+      switch (filter) {
+        // выводим стандартный список
+        case 'popular':
+          drawPictures(loadedPictures);
+          break;
+
+        // список отсортированный по датам по убыванию
+        case 'new' :
+          var newList = loadedPictures.slice(0);
+          newList.sort(compareDate);
+          drawPictures(newList);
+          break;
+
+        // списко отсортированный по комментариям по убыванию
+        case 'discussed':
+          var newList2 = loadedPictures.slice(0);
+          newList2.sort(compareComment);
+          drawPictures(newList2);
+          break;
+      }
+
+      /**
+       * Сортировка по комментария
+       * @param {Array} element
+       * @param {Array} element
+       */
+      function compareComment(a, b) {
+        if (a.comments < b.comments) {
+          return 1;
+        }
+        if (a.comments > b.comments) {
+          return -1;
+        }
+      }
+
+      /**
+       * Сортировка по датам
+       * @param {Array} element
+       * @param {Array} element
+       */
+      function compareDate(a, b) {
+        if (a.date < b.date) {
+          return 1;
+        }
+        if (a.date > b.date) {
+          return -1;
+        }
+      }
+    };
   };
 
   xhr.send();
@@ -59,6 +135,7 @@ function getPhotos() {
 
 // показываем фильтры
 filters.classList.remove('hidden');
+
 
 /**
  * @param {Object} data
