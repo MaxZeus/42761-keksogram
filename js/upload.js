@@ -233,6 +233,25 @@
     resizeForm.classList.remove('invisible');
   };
 
+  // Перевёл переменную выбранного фильтра в глобальную область
+  // Если есть значение из куки то ставим его, если нет то оставляем значение по умолчанию.
+  var selectedFilter = '';
+  if (docCookies.getItem('filter')){
+    selectedFilter = docCookies.getItem('filter');
+
+    var radioButtons = filterForm.querySelectorAll('input[type=radio]');
+    for ( var i = 0; i < radioButtons.length; i++){
+      if ( radioButtons[i].value == selectedFilter){
+        radioButtons[i].setAttribute('checked', '');
+        filterImage.className = 'filter-image-preview filter-' + selectedFilter;
+      } else {
+        radioButtons[i].removeAttribute('checked');
+      }
+    }
+  } else {
+    var selectedFilter = 'filter-none';
+  }
+
   /**
    * Отправка формы фильтра. Возвращает в начальное состояние, предварительно
    * записав сохраненный фильтр в cookie.
@@ -241,8 +260,21 @@
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
 
+    // текущая дата
+    var dateNow = new Date();
+    // дата моего последнего дня рождения
+    var myBirthdayDay = new Date('8 April 2015 GMT+0300');
+    // время смерти для куки = текущая дата + время которое прошло с моего поледнего дня рождения
+    var dateToKill = +dateNow + ( +dateNow - +myBirthdayDay );
+    // форматируем в строку
+    var formattedDateToKill = new Date(dateToKill).toUTCString();
+    // пишем куку со временем смерти записанным ранее
+    document.cookie = 'filter=' + selectedFilter + ';expires=' + formattedDateToKill;
+
     cleanupResizer();
     updateBackground();
+
+    filterForm.submit();
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
@@ -264,7 +296,8 @@
       };
     }
 
-    var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
+    // запиминаем выбранный фильтр в глоальную оласть, чтобы можно было забрать в куки
+    selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
 
