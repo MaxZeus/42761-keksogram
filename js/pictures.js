@@ -12,43 +12,50 @@ if (!filters.classList.contains('hidden')) {
 // основной контейнер
 var picturesContainer = document.querySelector('.pictures');
 
-// перебор основного массива из pictures.js 1 способ
+// 1 способ перебора основного массива из pictures.js
 // eslint активно ругается, но массив в другом файле
 // eslint иди и ищи его там
-pictures.forEach(function(el) {
-  var element = getPhotoTemplate(el);
-  picturesContainer.appendChild(element);
-});
+// pictures.forEach(function(el) {
+//   var element = getPhotoTemplate(el);
+//   picturesContainer.appendChild(element);
+// });
 
 // Вариант из способа с аяксом
-//getPhotos();
+getPhotos();
 
 /**
  * Отрисовка картинок в виде функции
  * @param {Array} pictures
  */
-// function drawPictures(pictures) {
-//   pictures.forEach(function(el) {
-//     var element = getPhotoTemplate(el);
-//     picturesContainer.appendChild(element);
-//   });
-// }
+function drawPictures(pictures) {
+  // очищаем
+  picturesContainer.innerHTML = '';
+  var newPictureFragment = document.createDocumentFragment();
+
+  // выводим
+  pictures.forEach(function(el) {
+    var element = getPhotoTemplate(el);
+    newPictureFragment.appendChild(element);
+  });
+
+  picturesContainer.appendChild(newPictureFragment);
+}
 
 /**
  * Забираем картинки в виде аякса а не через массив
  */
-// function getPhotos() {
-//   var xhr = new XMLHttpRequest();
-//   xhr.open('GET', 'data/pictures.json');
-//   xhr.onload = function(evt) {
-//     var rawData = evt.target.response;
-//     var loadedPictures = JSON.parse(rawData);
-//
-//     drawPictures(loadedPictures);
-//   };
-//
-//   xhr.send();
-// }
+function getPhotos() {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'data/pictures.json');
+  xhr.onload = function(evt) {
+    var rawData = evt.target.response;
+    var loadedPictures = JSON.parse(rawData);
+
+    drawPictures(loadedPictures);
+  };
+
+  xhr.send();
+}
 
 // показываем фильтры
 filters.classList.remove('hidden');
