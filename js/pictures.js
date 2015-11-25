@@ -173,7 +173,7 @@ function getPhotoTemplate(data) {
     pictureElement.classList.add('picture-load-failure');
   };
 
-  image.src = '/' + data.url;
+  image.src = data.url;
 
   return pictureElement;
 }
