@@ -90,11 +90,10 @@
         });
         // фильтруем массив
         var filterNewList = newList.filter(function(pictureDate) {
-          // тут я сделал три месяца, потому что в моей выборке нет фоток за ноябрь. А дата ноябрь у нас.
+          // делаем выборку за последние 3 месяца
           var lastMonth = Date.now() - 3 * 4 * 7 * 24 * 60 * 60 * 1000;
           var pictureDateMs = new Date(pictureDate.date);
-          pictureDateMs = Date.parse(pictureDateMs);
-          return pictureDateMs > lastMonth;
+          return +pictureDateMs > lastMonth;
         });
         drawPictures(filterNewList);
         break;
@@ -102,7 +101,6 @@
       // списко отсортированный по комментариям по убыванию
       case 'discussed':
         var newList2 = loadedPictures.slice(0);
-        // newList2.sort(compareComment);
         newList2.sort(function(a, b) {
           return b.comments - a.comments;
         });
@@ -113,7 +111,7 @@
 
   /**
    * @param {Object} data
-   * @return {element}
+   * @return {Element}
    */
   function getPhotoTemplate(data) {
     var template = document.querySelector('#picture-template');
