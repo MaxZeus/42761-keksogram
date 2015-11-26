@@ -175,21 +175,25 @@
    * Валидация формы кадрирования.
    */
 
-  var resizeBtn = resizeForm['resize-fwd'];
-  resizeBtn.setAttribute('disabled', '');
-
   resizeForm.onchange = function(evt) {
     evt.preventDefault();
+    validateResizeForm();
+  };
 
+  /**
+   * функция проверяет данные на валидность. Если невалидно меняем внешний вид у кнопки.
+   */
+  function validateResizeForm() {
+    var resizeBtn = resizeForm['resize-fwd'];
     var resizeX = resizeForm['resize-x'];
     var resizeY = resizeForm['resize-y'];
     var resizeSize = resizeForm['resize-size'];
-    if ( parseInt(resizeX.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth && parseInt(resizeY.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth ) {
-      resizeBtn.removeAttribute('disabled');
+    if (parseInt(resizeX.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth && parseInt(resizeY.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth ) {
+      resizeBtn.removeAttribute('style');
     } else {
-      resizeBtn.setAttribute('disabled', '');
+      resizeBtn.style.opacity = '0.3';
     }
-  };
+  }
 
   /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
@@ -240,12 +244,10 @@
     selectedFilter = docCookies.getItem('filter');
 
     var radioButtons = filterForm.querySelectorAll('input[type=radio]');
-    for ( var i = 0; i < radioButtons.length; i++) {
-      if ( radioButtons[i].value === selectedFilter) {
+    for (var i = 0; i < radioButtons.length; i++) {
+      if (radioButtons[i].value === selectedFilter) {
         radioButtons[i].setAttribute('checked', '');
         filterImage.className = 'filter-image-preview filter-' + selectedFilter;
-      } else {
-        radioButtons[i].removeAttribute('checked');
       }
     }
   } else {
@@ -262,14 +264,13 @@
 
     // текущая дата
     var dateNow = new Date();
+    var myLastBirthday = '8 April ' + dateNow.getFullYear() + ' GMT+0300';
     // дата моего последнего дня рождения
-    var myBirthdayDay = new Date('8 April 2015 GMT+0300');
+    var myBirthdayDay = new Date(myLastBirthday);
     // время смерти для куки = текущая дата + время которое прошло с моего поледнего дня рождения
     var dateToKill = +dateNow + ( +dateNow - +myBirthdayDay );
-    // форматируем в строку
-    var formattedDateToKill = new Date(dateToKill).toUTCString();
     // пишем куку со временем смерти записанным ранее
-    document.cookie = 'filter=' + selectedFilter + ';expires=' + formattedDateToKill;
+    docCookies.setItem('filter', selectedFilter, new Date(dateToKill));
 
     cleanupResizer();
     updateBackground();
