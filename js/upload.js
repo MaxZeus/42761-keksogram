@@ -189,9 +189,9 @@
     var resizeY = resizeForm['resize-y'];
     var resizeSize = resizeForm['resize-size'];
     if (parseInt(resizeX.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth && parseInt(resizeY.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth ) {
-      resizeBtn.removeAttribute('style');
+      resizeBtn.removeAttribute('disabled');
     } else {
-      resizeBtn.style.opacity = '0.3';
+      resizeBtn.setAttribute('disabled', '');
     }
   }
 
