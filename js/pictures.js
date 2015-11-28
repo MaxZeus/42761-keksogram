@@ -8,21 +8,41 @@
 
   // основной контейнер
   var picturesContainer = document.querySelector('.pictures');
+  var currentPage = 0;
+  var PAGE_SIZE = 12;
 
   // Вариант из способа с аяксом
   getPhotos();
+
+  window.addEventListener('scroll', function(evt) {
+    var lastPhoto = document.querySelector('.picture:last-child');
+    var lastPhotoCoord = lastPhoto.getBoundingClientRect();
+    var viewportHeight = window.innerHeight;
+
+    if (lastPhotoCoord.bottom - viewportHeight <= lastPhotoCoord.height) {
+      if (currentPage < Math.ceil(loadedPictures.length / PAGE_SIZE)) {
+        drawPictures(loadedPictures, ++currentPage, false);
+      }
+    }
+  });
 
   /**
    * Отрисовка картинок в виде функции
    * @param {Array} pictures
    */
-  function drawPictures(pictures) {
-    // очищаем
-    picturesContainer.innerHTML = '';
+  function drawPictures(pictures, pageNumber, replace) {
+    if (replace) {
+      picturesContainer.innerHTML = '';
+    }
+
     var newPictureFragment = document.createDocumentFragment();
 
+    var pageFrom = pageNumber * PAGE_SIZE;
+    var pageTo = pageFrom + PAGE_SIZE;
+    var picturesPage = pictures.slice(pageFrom, pageTo);
+
     // выводим
-    pictures.forEach(function(el) {
+    picturesPage.forEach(function(el) {
       var element = getPhotoTemplate(el);
       newPictureFragment.appendChild(element);
     });
@@ -62,7 +82,7 @@
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
 
-      drawPictures(loadedPictures);
+      drawPictures(loadedPictures, 0, true);
     };
 
     xhr.send();
@@ -78,7 +98,7 @@
     switch (filter) {
       // выводим стандартный список
       case 'popular':
-        drawPictures(loadedPictures);
+        drawPictures(loadedPictures, 0, true);
         break;
 
       // список отсортированный по датам по убыванию
@@ -95,7 +115,7 @@
           var pictureDateMs = new Date(pictureDate.date);
           return +pictureDateMs > lastMonth;
         });
-        drawPictures(filterNewList);
+        drawPictures(filterNewList, 0, true);
         break;
 
       // списко отсортированный по комментариям по убыванию
@@ -104,7 +124,7 @@
         newList2.sort(function(a, b) {
           return b.comments - a.comments;
         });
-        drawPictures(newList2);
+        drawPictures(newList2, 0, true);
         break;
     }
   };
