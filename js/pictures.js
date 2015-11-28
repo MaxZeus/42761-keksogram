@@ -14,10 +14,10 @@
   // Вариант из способа с аяксом
   getPhotos();
 
-  window.addEventListener('scroll', function(evt) {
+  window.addEventListener('wheel', function() {
     var lastPhoto = document.querySelector('.picture:last-child');
-    var lastPhotoCoord = lastPhoto.getBoundingClientRect();
     var viewportHeight = window.innerHeight;
+    var lastPhotoCoord = lastPhoto.getBoundingClientRect();
 
     if (lastPhotoCoord.bottom - viewportHeight <= lastPhotoCoord.height) {
       if (currentPage < Math.ceil(loadedPictures.length / PAGE_SIZE)) {
@@ -25,6 +25,7 @@
       }
     }
   });
+
 
   /**
    * Отрисовка картинок в виде функции
