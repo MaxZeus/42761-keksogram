@@ -14,18 +14,23 @@
   // Вариант из способа с аяксом
   getPhotos();
 
+  var wheelTimeout;
+
   window.addEventListener('wheel', function() {
-    var lastPhoto = document.querySelector('.picture:last-child');
-    var viewportHeight = window.innerHeight;
-    var lastPhotoCoord = lastPhoto.getBoundingClientRect();
+    clearTimeout(wheelTimeout);
+    wheelTimeout = setTimeout(function() {
+      console.log('scroll');
+      var lastPhoto = document.querySelector('.picture:last-child');
+      var viewportHeight = window.innerHeight;
+      var lastPhotoCoord = lastPhoto.getBoundingClientRect();
 
-    if (lastPhotoCoord.bottom - viewportHeight <= lastPhotoCoord.height) {
-      if (currentPage < Math.ceil(loadedPictures.length / PAGE_SIZE)) {
-        drawPictures(loadedPictures, ++currentPage, false);
+      if (lastPhotoCoord.bottom - viewportHeight <= lastPhotoCoord.height) {
+        if (currentPage < Math.ceil(loadedPictures.length / PAGE_SIZE)) {
+          drawPictures(loadedPictures, ++currentPage, false);
+        }
       }
-    }
+    }, 100);
   });
-
 
   /**
    * Отрисовка картинок в виде функции
