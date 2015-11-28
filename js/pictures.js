@@ -94,22 +94,28 @@
     xhr.send();
   }
 
-  // Обработчики для фильтров
-  filters.onchange = function(event) {
-    event.preventDefault();
+  var filterContainer = document.querySelector('.filters');
+  filterContainer.addEventListener('click', function(evt) {
+    var clickedFilter = evt.target;
+    if (clickedFilter.classList.contains('filters-item')) {
+      setActiveFilter(clickedFilter.getAttribute('for'));
+    }
+  });
 
-    // забираем текущее значение фильтра
-    var filter = filters.filter.value;
-
-    switch (filter) {
+  /**
+   * Установка фильтра
+   * @param {String}
+   */
+  function setActiveFilter(target) {
+    switch (target) {
       // выводим стандартный список
-      case 'popular':
+      case 'filter-popular':
         drawPictures(loadedPictures, 0, true);
         break;
 
       // список отсортированный по датам по убыванию
       // плюс только последний месяц
-      case 'new' :
+      case 'filter-new' :
         var newList = loadedPictures.slice(0);
         newList.sort(function(a, b) {
           return b.date - a.date;
@@ -125,7 +131,7 @@
         break;
 
       // списко отсортированный по комментариям по убыванию
-      case 'discussed':
+      case 'filter-discussed':
         var newList2 = loadedPictures.slice(0);
         newList2.sort(function(a, b) {
           return b.comments - a.comments;
@@ -133,7 +139,7 @@
         drawPictures(newList2, 0, true);
         break;
     }
-  };
+  }
 
   /**
    * @param {Object} data
