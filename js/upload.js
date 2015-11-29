@@ -317,7 +317,6 @@
    * Обработчик изменения формы при изменения размера экрана
    */
   window.addEventListener('resizerchange', function() {
-    console.log(+currentResizer.getConstraint().x, +currentResizer.getConstraint().y, +currentResizer.getConstraint().side);
     resizeForm['resize-x'].value = currentResizer.getConstraint().x;
     resizeForm['resize-y'].value = currentResizer.getConstraint().y;
     resizeForm['resize-size'].value = currentResizer.getConstraint().side;
