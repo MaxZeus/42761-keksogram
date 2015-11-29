@@ -180,8 +180,6 @@
   resizeForm.addEventListener('change', function(evt) {
     evt.preventDefault();
     validateResizeForm();
-
-    // куда девается картинка при изменении ресайзера?
     currentResizer.setConstraint(resizeForm['resize-x'].value, resizeForm['resize-y'].value, resizeForm['resize-size'].value);
   });
 
