@@ -26,6 +26,7 @@
       if (picturesContainerCoord.bottom - viewportHeight <= picturesContainerCoord.height) {
         drawNextPage();
       }
+
     }, 100);
   });
 
@@ -37,6 +38,21 @@
       drawPictures(loadedPicturesFilter, ++currentPage, false);
     }
   }
+
+  /**
+   * Функция, проверки заполняют ли картинки экран и можено ли нарисовать ещё одну6 чтобы его заполнить
+   * @return {Boolean}
+   */
+  function drawNextPageAvailable() {
+    var viewportHeight = window.innerHeight;
+    var picturesContainerCoord = picturesContainer.getBoundingClientRect();
+
+    if (picturesContainerCoord.height <= viewportHeight) {
+      return true;
+    }
+  }
+
+
 
   /**
    * Отрисовка картинок в виде функции
