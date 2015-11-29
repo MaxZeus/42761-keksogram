@@ -176,6 +176,38 @@ body {
 .upload-form-controls-fwd {
   background: rgba(255, 231, 83, 0.2) url('../img/icon-arrow.png') center no-repeat;
   float: right;
+  position: relative;
+}
+
+.upload-form-controls-fwd:disabled{
+  background: rgba(243, 79, 79, 0.3) url('../img/icon-cross.png') center no-repeat;
+}
+
+.upload-form-controls-fwd:disabled::before{
+  width: 150px;
+  border-radius: 5px;
+  background: #4C1817;
+  content: "В форму введены невалидные данные. Сумма полей Слева и Сторона и полей Сверху и Сторона не должна быть больше размера картинки.";
+  display: block;
+  padding: 10px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 55px;
+  z-index: 20;
+}
+
+.upload-form-controls-fwd:disabled::after{
+  background: #4C1817;
+  display: block;
+  content: "";
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) rotate(-45deg);
+  bottom: 47px;
+  z-index: 10;
 }
 
 .upload-resize canvas {

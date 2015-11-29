@@ -172,6 +172,30 @@
   };
 
   /**
+   * Валидация формы кадрирования.
+   */
+
+  resizeForm.onchange = function(evt) {
+    evt.preventDefault();
+    validateResizeForm();
+  };
+
+  /**
+   * функция проверяет данные на валидность. Если невалидно меняем внешний вид у кнопки.
+   */
+  function validateResizeForm() {
+    var resizeBtn = resizeForm['resize-fwd'];
+    var resizeX = resizeForm['resize-x'];
+    var resizeY = resizeForm['resize-y'];
+    var resizeSize = resizeForm['resize-size'];
+    if (parseInt(resizeX.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth && parseInt(resizeY.value, 10) + parseInt(resizeSize.value, 10) <= currentResizer._image.naturalWidth ) {
+      resizeBtn.removeAttribute('disabled');
+    } else {
+      resizeBtn.setAttribute('disabled', '');
+    }
+  }
+
+  /**
    * Обработка сброса формы кадрирования. Возвращает в начальное состояние
    * и обновляет фон.
    * @param {Event} evt
@@ -213,6 +237,23 @@
     resizeForm.classList.remove('invisible');
   };
 
+  // Перевёл переменную выбранного фильтра в глобальную область
+  // Если есть значение из куки то ставим его, если нет то оставляем значение по умолчанию.
+  var selectedFilter = '';
+  if (docCookies.getItem('filter')) {
+    selectedFilter = docCookies.getItem('filter');
+
+    var radioButtons = filterForm.querySelectorAll('input[type=radio]');
+    for (var i = 0; i < radioButtons.length; i++) {
+      if (radioButtons[i].value === selectedFilter) {
+        radioButtons[i].setAttribute('checked', '');
+        filterImage.className = 'filter-image-preview filter-' + selectedFilter;
+      }
+    }
+  } else {
+    selectedFilter = 'filter-none';
+  }
+
   /**
    * Отправка формы фильтра. Возвращает в начальное состояние, предварительно
    * записав сохраненный фильтр в cookie.
@@ -221,8 +262,20 @@
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
 
+    // текущая дата
+    var dateNow = new Date();
+    var myLastBirthday = '8 April ' + dateNow.getFullYear() + ' GMT+0300';
+    // дата моего последнего дня рождения
+    var myBirthdayDay = new Date(myLastBirthday);
+    // время смерти для куки = текущая дата + время которое прошло с моего поледнего дня рождения
+    var dateToKill = +dateNow + ( +dateNow - +myBirthdayDay );
+    // пишем куку со временем смерти записанным ранее
+    docCookies.setItem('filter', selectedFilter, new Date(dateToKill));
+
     cleanupResizer();
     updateBackground();
+
+    filterForm.submit();
 
     filterForm.classList.add('invisible');
     uploadForm.classList.remove('invisible');
@@ -244,7 +297,8 @@
       };
     }
 
-    var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
+    // запиминаем выбранный фильтр в глоальную оласть, чтобы можно было забрать в куки
+    selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
 
