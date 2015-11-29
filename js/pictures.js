@@ -20,13 +20,7 @@
   window.addEventListener('scroll', function() {
     clearTimeout(wheelTimeout);
     wheelTimeout = setTimeout(function() {
-      var viewportHeight = window.innerHeight;
-      var picturesContainerCoord = picturesContainer.getBoundingClientRect();
-
-      if (picturesContainerCoord.bottom - viewportHeight <= picturesContainerCoord.height) {
-        drawNextPage();
-      }
-
+      drawNextPage();
     }, 100);
   });
 
@@ -46,13 +40,11 @@
   function drawNextPageAvailable() {
     var viewportHeight = window.innerHeight;
     var picturesContainerCoord = picturesContainer.getBoundingClientRect();
-
     if (picturesContainerCoord.height <= viewportHeight) {
       return true;
     }
+    return false;
   }
-
-
 
   /**
    * Отрисовка картинок в виде функции
@@ -111,6 +103,9 @@
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
       setActiveFilter();
+      while(drawNextPageAvailable()){
+        drawNextPage();
+      }
     };
 
     xhr.send();
