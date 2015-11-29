@@ -33,17 +33,12 @@
 
   /**
    * Функция, проверки заполняют ли картинки экран и можено ли нарисовать ещё одну6 чтобы его заполнить
-   * @return {Boolean}
+   * @return {boolean}
    */
   function drawNextPageAvailable() {
-    if (currentPage < Math.ceil(filteredPictures.length / PAGE_SIZE)) {
       var viewportHeight = window.innerHeight;
       var picturesContainerCoord = picturesContainer.getBoundingClientRect();
-      if (picturesContainerCoord.bottom - viewportHeight <= 0) {
-        return true;
-      }
-      return false;
-    }
+      return picturesContainerCoord.bottom - viewportHeight <= 0 && currentPage < Math.ceil(filteredPictures.length / PAGE_SIZE);
   }
 
   /**
