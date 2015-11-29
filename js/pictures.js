@@ -49,8 +49,8 @@
   /**
    * Отрисовка картинок в виде функции
    * @param {Array} pictures
-   * @param {Number}
-   * @param {Boolean}
+   * @param {number}
+   * @param {boolean}
    */
   function drawPictures(pictures, pageNumber, replace) {
     if (replace) {
@@ -103,7 +103,7 @@
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
       setActiveFilter();
-      while(drawNextPageAvailable()){
+      while (drawNextPageAvailable()) {
         drawNextPage();
       }
     };
@@ -121,24 +121,22 @@
 
   /**
    * Установка фильтра
-   * @param {String}
+   * @param {string}
    */
-  function setActiveFilter(target) {
-    switch (target) {
-      // формируем станлартный список
-      case 'filter-popular':
-        loadedPicturesFilter = loadedPictures;
-        break;
+  function setActiveFilter(filter) {
 
+    var filteredPictures = loadedPictures.slice(0);
+
+    switch (filter) {
       // список отсортированный по датам по убыванию
       // плюс только последний месяц
       case 'filter-new' :
-        loadedPicturesFilter = loadedPictures.slice(0);
-        loadedPicturesFilter.sort(function(a, b) {
+        filteredPictures = loadedPictures.slice(0);
+        filteredPictures.sort(function(a, b) {
           return b.date - a.date;
         });
         // фильтруем массив
-        loadedPicturesFilter = loadedPicturesFilter.filter(function(pictureDate) {
+        filteredPictures = filteredPictures.filter(function(pictureDate) {
           // делаем выборку за последние 3 месяца
           var lastMonth = Date.now() - 3 * 4 * 7 * 24 * 60 * 60 * 1000;
           var pictureDateMs = new Date(pictureDate.date);
@@ -148,18 +146,14 @@
 
       // списко отсортированный по комментариям по убыванию
       case 'filter-discussed':
-        loadedPicturesFilter = loadedPictures.slice(0);
-        loadedPicturesFilter.sort(function(a, b) {
+        filteredPictures = loadedPictures.slice(0);
+        filteredPictures.sort(function(a, b) {
           return b.comments - a.comments;
         });
         break;
-
-      default:
-        loadedPicturesFilter = loadedPictures;
-        break;
     }
     currentPage = 0;
-    drawPictures(loadedPicturesFilter, currentPage, true);
+    drawPictures(filteredPictures, currentPage, true);
   }
 
   /**
