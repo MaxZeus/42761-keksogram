@@ -106,8 +106,8 @@
       // Установка начальной точки системы координат в центр холста.
       this._ctx.translate(this._container.width / 2, this._container.height / 2);
 
-      var displX = -(this._resizeConstraint.x + this._resizeConstraint.side / 2);
-      var displY = -(this._resizeConstraint.y + this._resizeConstraint.side / 2);
+      var displX = -(+this._resizeConstraint.x + +this._resizeConstraint.side / 2);
+      var displY = -(+this._resizeConstraint.y + +this._resizeConstraint.side / 2);
       // Отрисовка изображения на холсте. Параметры задают изображение, которое
       // нужно отрисовать и координаты его верхнего левого угла.
       // Координаты задаются от центра холста.
@@ -127,8 +127,8 @@
       this._ctx.strokeRect(
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+          +this._resizeConstraint.side - this._ctx.lineWidth / 2,
+          +this._resizeConstraint.side - this._ctx.lineWidth / 2);
 
       // работа с текстом размера картинки
       var imageW = this._image.naturalWidth;
@@ -256,15 +256,15 @@
      */
     setConstraint: function(x, y, side) {
       if (typeof x !== 'undefined') {
-        this._resizeConstraint.x = x;
+        this._resizeConstraint.x = +x;
       }
 
       if (typeof y !== 'undefined') {
-        this._resizeConstraint.y = y;
+        this._resizeConstraint.y = +y;
       }
 
       if (typeof side !== 'undefined') {
-        this._resizeConstraint.side = side;
+        this._resizeConstraint.side = +side;
       }
 
       requestAnimationFrame(function() {

@@ -160,7 +160,7 @@
           resizeForm.classList.remove('invisible');
 
           // почему я не могу тут получитьпараметры ресайзера, чтобы забить их в форму?
-          console.log(currentResizer.getConstraint());
+          console.log(currentResizer);
 
           hideMessage();
         });
@@ -177,7 +177,6 @@
   /**
    * Валидация формы кадрирования.
    */
-
   resizeForm.addEventListener('change', function(evt) {
     evt.preventDefault();
     validateResizeForm();
@@ -318,6 +317,7 @@
    * Обработчик изменения формы при изменения размера экрана
    */
   window.addEventListener('resizerchange', function() {
+    console.log(+currentResizer.getConstraint().x, +currentResizer.getConstraint().y, +currentResizer.getConstraint().side);
     resizeForm['resize-x'].value = currentResizer.getConstraint().x;
     resizeForm['resize-y'].value = currentResizer.getConstraint().y;
     resizeForm['resize-size'].value = currentResizer.getConstraint().side;
