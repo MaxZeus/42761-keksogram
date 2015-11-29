@@ -5,6 +5,7 @@
   // Объявляем фильтр
   var filters = document.querySelector('.filters');
   var loadedPictures;
+  var loadedPicturesFilter;
 
   // основной контейнер
   var picturesContainer = document.querySelector('.pictures');
@@ -16,25 +17,32 @@
 
   var wheelTimeout;
 
-  window.addEventListener('wheel', function() {
+  window.addEventListener('scroll', function() {
     clearTimeout(wheelTimeout);
     wheelTimeout = setTimeout(function() {
-      console.log('scroll');
-      var lastPhoto = document.querySelector('.picture:last-child');
       var viewportHeight = window.innerHeight;
-      var lastPhotoCoord = lastPhoto.getBoundingClientRect();
+      var picturesContainerCoord = picturesContainer.getBoundingClientRect();
 
-      if (lastPhotoCoord.bottom - viewportHeight <= lastPhotoCoord.height) {
-        if (currentPage < Math.ceil(loadedPictures.length / PAGE_SIZE)) {
-          drawPictures(loadedPictures, ++currentPage, false);
-        }
+      if (picturesContainerCoord.bottom - viewportHeight <= picturesContainerCoord.height) {
+        drawNextPage();
       }
     }, 100);
   });
 
   /**
+   * Функция, которая рисует новую страницу, проверяя при этом можно ли их рисовать по переменной CurrentPage
+   */
+  function drawNextPage() {
+    if (currentPage < Math.ceil(loadedPicturesFilter.length / PAGE_SIZE)) {
+      drawPictures(loadedPicturesFilter, ++currentPage, false);
+    }
+  }
+
+  /**
    * Отрисовка картинок в виде функции
    * @param {Array} pictures
+   * @param {Number}
+   * @param {Boolean}
    */
   function drawPictures(pictures, pageNumber, replace) {
     if (replace) {
@@ -83,12 +91,10 @@
     // событие по загрузке
     xhr.onload = function(evt) {
       picturesContainer.classList.remove('pictures-loading');
-      // показываем фильтр
       filters.classList.remove('hidden');
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
-
-      drawPictures(loadedPictures, 0, true);
+      setActiveFilter();
     };
 
     xhr.send();
@@ -108,37 +114,41 @@
    */
   function setActiveFilter(target) {
     switch (target) {
-      // выводим стандартный список
+      // формируем станлартный список
       case 'filter-popular':
-        drawPictures(loadedPictures, 0, true);
+        loadedPicturesFilter = loadedPictures;
         break;
 
       // список отсортированный по датам по убыванию
       // плюс только последний месяц
       case 'filter-new' :
-        var newList = loadedPictures.slice(0);
-        newList.sort(function(a, b) {
+        loadedPicturesFilter = loadedPictures.slice(0);
+        loadedPicturesFilter.sort(function(a, b) {
           return b.date - a.date;
         });
         // фильтруем массив
-        var filterNewList = newList.filter(function(pictureDate) {
+        loadedPicturesFilter = loadedPicturesFilter.filter(function(pictureDate) {
           // делаем выборку за последние 3 месяца
           var lastMonth = Date.now() - 3 * 4 * 7 * 24 * 60 * 60 * 1000;
           var pictureDateMs = new Date(pictureDate.date);
           return +pictureDateMs > lastMonth;
         });
-        drawPictures(filterNewList, 0, true);
         break;
 
       // списко отсортированный по комментариям по убыванию
       case 'filter-discussed':
-        var newList2 = loadedPictures.slice(0);
-        newList2.sort(function(a, b) {
+        loadedPicturesFilter = loadedPictures.slice(0);
+        loadedPicturesFilter.sort(function(a, b) {
           return b.comments - a.comments;
         });
-        drawPictures(newList2, 0, true);
+        break;
+
+      default:
+        loadedPicturesFilter = loadedPictures;
         break;
     }
+    currentPage = 0;
+    drawPictures(loadedPicturesFilter, currentPage, true);
   }
 
   /**
