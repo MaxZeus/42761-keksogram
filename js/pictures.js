@@ -5,7 +5,7 @@
   // Объявляем фильтр
   var filters = document.querySelector('.filters');
   var loadedPictures;
-  var loadedPicturesFilter;
+  var filteredPictures;
 
   // основной контейнер
   var picturesContainer = document.querySelector('.pictures');
@@ -28,9 +28,7 @@
    * Функция, которая рисует новую страницу, проверяя при этом можно ли их рисовать по переменной CurrentPage
    */
   function drawNextPage() {
-    if (currentPage < Math.ceil(loadedPicturesFilter.length / PAGE_SIZE)) {
-      drawPictures(loadedPicturesFilter, ++currentPage, false);
-    }
+    drawPictures(filteredPictures, ++currentPage, false);
   }
 
   /**
@@ -38,12 +36,15 @@
    * @return {Boolean}
    */
   function drawNextPageAvailable() {
-    var viewportHeight = window.innerHeight;
-    var picturesContainerCoord = picturesContainer.getBoundingClientRect();
-    if (picturesContainerCoord.height <= viewportHeight) {
-      return true;
+    if (currentPage < Math.ceil(filteredPictures.length / PAGE_SIZE)) {
+      var viewportHeight = window.innerHeight;
+      var picturesContainerCoord = picturesContainer.getBoundingClientRect();
+      if (picturesContainerCoord.bottom - viewportHeight <= 0) {
+        console.log(picturesContainerCoord.bottom, viewportHeight);
+        return true;
+      }
+      return false;
     }
-    return false;
   }
 
   /**
@@ -125,7 +126,7 @@
    */
   function setActiveFilter(filter) {
 
-    var filteredPictures = loadedPictures.slice(0);
+    filteredPictures = loadedPictures.slice(0);
 
     switch (filter) {
       // список отсортированный по датам по убыванию
@@ -154,6 +155,9 @@
     }
     currentPage = 0;
     drawPictures(filteredPictures, currentPage, true);
+    while (drawNextPageAvailable()) {
+      drawNextPage();
+    }
   }
 
   /**
