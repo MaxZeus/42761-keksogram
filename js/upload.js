@@ -159,6 +159,9 @@
           uploadForm.classList.add('invisible');
           resizeForm.classList.remove('invisible');
 
+          // почему я не могу тут получитьпараметры ресайзера, чтобы забить их в форму?
+          console.log(currentResizer.getConstraint());
+
           hideMessage();
         });
 
@@ -178,6 +181,9 @@
   resizeForm.addEventListener('change', function(evt) {
     evt.preventDefault();
     validateResizeForm();
+
+    // куда девается картинка при изменении ресайзера?
+    currentResizer.setConstraint(resizeForm['resize-x'].value, resizeForm['resize-y'].value, resizeForm['resize-size'].value);
   });
 
   /**
