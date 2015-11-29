@@ -308,6 +308,22 @@
     filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
   });
 
+  /**
+   * Обработчик изменения формы при изменения размера экрана
+   */
+  window.addEventListener('resizerchange', function() {
+    resizeForm['resize-x'].value = currentResizer.getConstraint().x;
+    resizeForm['resize-y'].value = currentResizer.getConstraint().y;
+    resizeForm['resize-size'].value = currentResizer.getConstraint().side;
+  });
+
+  /**
+   * Синхронизация объекта с формой
+   */
+  function resizerToForm() {
+
+  }
+
   cleanupResizer();
   updateBackground();
 })();
