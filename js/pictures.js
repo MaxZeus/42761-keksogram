@@ -40,7 +40,6 @@
       var viewportHeight = window.innerHeight;
       var picturesContainerCoord = picturesContainer.getBoundingClientRect();
       if (picturesContainerCoord.bottom - viewportHeight <= 0) {
-        console.log(picturesContainerCoord.bottom, viewportHeight);
         return true;
       }
       return false;
