@@ -40,6 +40,11 @@
           this._container.height / 2 - side / 2,
           side);
 
+      var resizeForm = document.forms['upload-resize'];
+      resizeForm['resize-x'].value = this._container.width / 2 - side / 2;
+      resizeForm['resize-y'].value = this._container.height / 2 - side / 2;
+      resizeForm['resize-size'].value = side;
+
       // Отрисовка изначального состояния канваса.
       this.redraw();
     }.bind(this);
