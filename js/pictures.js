@@ -28,14 +28,16 @@
    * Функция, которая рисует новую страницу, проверяя при этом можно ли их рисовать по переменной CurrentPage
    */
   function drawNextPage() {
-    drawPictures(filteredPictures, ++currentPage, false);
+    while (isNextPageAvailable()) {
+      drawPictures(filteredPictures, ++currentPage, false);
+    }
   }
 
   /**
    * Функция, проверки заполняют ли картинки экран и можено ли нарисовать ещё одну6 чтобы его заполнить
    * @return {boolean}
    */
-  function drawNextPageAvailable() {
+  function isNextPageAvailable() {
       var viewportHeight = window.innerHeight;
       var picturesContainerCoord = picturesContainer.getBoundingClientRect();
       return picturesContainerCoord.bottom - viewportHeight <= 0 && currentPage < Math.ceil(filteredPictures.length / PAGE_SIZE);
@@ -98,9 +100,6 @@
       var rawData = evt.target.response;
       loadedPictures = JSON.parse(rawData);
       setActiveFilter();
-      while (drawNextPageAvailable()) {
-        drawNextPage();
-      }
     };
 
     xhr.send();
@@ -126,7 +125,6 @@
       // список отсортированный по датам по убыванию
       // плюс только последний месяц
       case 'filter-new' :
-        filteredPictures = loadedPictures.slice(0);
         filteredPictures.sort(function(a, b) {
           return b.date - a.date;
         });
@@ -141,17 +139,13 @@
 
       // списко отсортированный по комментариям по убыванию
       case 'filter-discussed':
-        filteredPictures = loadedPictures.slice(0);
         filteredPictures.sort(function(a, b) {
           return b.comments - a.comments;
         });
         break;
     }
     currentPage = 0;
-    drawPictures(filteredPictures, currentPage, true);
-    while (drawNextPageAvailable()) {
-      drawNextPage();
-    }
+    drawNextPage();
   }
 
   /**
